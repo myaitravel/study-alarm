@@ -63,19 +63,44 @@ input:checked+.slider:before{transform:translateX(18px);}
 .record-dur{font-size:13px;color:#6b7280;}
 .empty{text-align:center;color:#9ca3af;font-size:14px;padding:2rem 0;}
 @media(prefers-color-scheme:dark){
-  body,html{background:#1c1c1e;color:#fff;}
+  body,html{background:#1c1c1e;color:#f2f2f7;}
   .app{background:#1c1c1e;}
   .nav{background:#2c2c2e;border-color:#3a3a3c;}
+  .nav-btn{color:#8e8e93;}
+  .nav-btn.active{color:#64B5F6;}
   .card{background:#2c2c2e;border-color:#3a3a3c;}
-  .chip{background:#3a3a3c;border-color:#3a3a3c;color:#9ca3af;}
+  .chip{background:#3a3a3c;border-color:#48484a;color:#aeaeb2;}
   .chip.active{background:#0c447c;color:#64B5F6;border-color:#185FA5;}
-  .subject-select,.add-form input,.time-input{background:#2c2c2e;border-color:#3a3a3c;color:#fff;}
+  .subject-select,.add-form input,.time-input{background:#3a3a3c;border-color:#48484a;color:#f2f2f7;}
   .subject-row,.record-row{border-color:#3a3a3c;}
-  .stat-card{background:#2c2c2e;}
-  .stat-val,.page-title,.record-name,.subject-name{color:#fff;}
-  .bar-track{background:#3a3a3c;}
-  .add-btn{border-color:#3a3a3c;color:#9ca3af;}
-  .add-form .row button,.timer-btns button{background:#2c2c2e;border-color:#3a3a3c;color:#fff;}
+  .subject-row:last-of-type,.record-row:last-of-type{border-color:transparent;}
+  .stat-card{background:#3a3a3c;}
+  .stat-val{color:#f2f2f7;}
+  .stat-lbl{color:#aeaeb2;}
+  .page-title,.record-name,.subject-name{color:#f2f2f7;}
+  .timer-label{color:#aeaeb2;}
+  .bar-track{background:#48484a;}
+  .bar-label,.bar-val,.record-dur,.subject-time{color:#aeaeb2;}
+  .add-btn{border-color:#48484a;color:#aeaeb2;}
+  .add-form .row button,.timer-btns button{background:#3a3a3c;border-color:#48484a;color:#f2f2f7;}
+  .timer-btns .btn-primary{background:#185FA5;color:#fff;border-color:#185FA5;}
+  .add-form .row .confirm{background:#185FA5;color:#fff;border-color:#185FA5;}
+  .empty{color:#636366;}
+  #kr-time{color:#64B5F6;}
+  #kr-date{color:#aeaeb2;}
+  /* 통계 카드 인라인 색상 */
+  #screen-stats .card div[style*="color:#1a1a1a"]{color:#f2f2f7!important;}
+  #session-count{color:#f2f2f7;}
+  /* 카드 소제목 */
+  .card-heading{color:#f2f2f7!important;}
+  .card-sub{color:#aeaeb2!important;}
+  /* 세션 카운트 */
+  #session-count{color:#f2f2f7!important;}
+  /* SVG 타이머 텍스트 */
+  #timer-text{fill:#f2f2f7!important;}
+  #timer-phase{fill:#aeaeb2!important;}
+  /* SVG 링 배경 */
+  circle[stroke="#f3f4f6"]{stroke:#3a3a3c;}
 }
 </style>
 </head>
@@ -84,6 +109,10 @@ input:checked+.slider:before{transform:translateX(18px);}
 
 <div class="screen active" id="screen-timer">
   <div class="page-title">타이머</div>
+  <div id="kr-clock" style="text-align:center;margin:-4px 0 10px;line-height:1.3;">
+    <div id="kr-time" style="font-size:32px;font-weight:700;letter-spacing:2px;color:#185FA5;font-variant-numeric:tabular-nums;">00:00:00</div>
+    <div id="kr-date" style="font-size:12px;color:#6b7280;margin-top:1px;"></div>
+  </div>
   <div class="mode-chips">
     <div class="chip active" data-mins="25" data-label="집중 모드 · 25분" onclick="setMode(this)">포모도로</div>
     <div class="chip" data-mins="10" data-label="단기 집중 · 10분" onclick="setMode(this)">단기 집중</div>
@@ -97,8 +126,8 @@ input:checked+.slider:before{transform:translateX(18px);}
         <circle id="ring" cx="100" cy="100" r="88" fill="none" stroke="#185FA5" stroke-width="10"
           stroke-dasharray="553" stroke-dashoffset="0"
           stroke-linecap="round" transform="rotate(-90 100 100)"/>
-        <text x="100" y="95" text-anchor="middle" font-size="42" font-weight="600" fill="#1a1a1a" font-family="-apple-system,sans-serif" id="timer-text">25:00</text>
-        <text x="100" y="120" text-anchor="middle" font-size="13" fill="#6b7280" font-family="-apple-system,sans-serif" id="timer-phase">집중</text>
+        <text x="100" y="95" text-anchor="middle" font-size="42" font-weight="600" fill="currentColor" font-family="-apple-system,sans-serif" id="timer-text" style="fill:#1a1a1a;">25:00</text>
+        <text x="100" y="120" text-anchor="middle" font-size="13" font-family="-apple-system,sans-serif" id="timer-phase" style="fill:#6b7280;">집중</text>
       </svg>
     </div>
     <select class="subject-select" id="timer-subject-sel">
@@ -110,7 +139,7 @@ input:checked+.slider:before{transform:translateX(18px);}
     </div>
   </div>
   <div class="card" style="text-align:center;">
-    <div style="font-size:13px;color:#6b7280;">오늘 완료한 세션</div>
+    <div style="font-size:13px;color:#6b7280;" class="card-sub">오늘 완료한 세션</div>
     <div style="font-size:28px;font-weight:600;color:#1a1a1a;margin-top:4px;" id="session-count">0</div>
   </div>
 </div>
@@ -142,11 +171,11 @@ input:checked+.slider:before{transform:translateX(18px);}
     <div class="stat-card"><div class="stat-val" id="total-sess">0</div><div class="stat-lbl">누적 세션</div></div>
   </div>
   <div class="card">
-    <div style="font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:12px;">과목별 누적</div>
+    <div style="font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:12px;" class="card-heading">과목별 누적</div>
     <div id="subject-bars"><div class="empty">아직 기록이 없어요</div></div>
   </div>
   <div class="card">
-    <div style="font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:12px;">최근 기록</div>
+    <div style="font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:12px;" class="card-heading">최근 기록</div>
     <div id="records-list"><div class="empty">아직 기록이 없어요</div></div>
   </div>
 </div>
@@ -173,6 +202,21 @@ var isBreak=false;
 var studySecs=0;
 var endTime=null;
 var timerId=null;
+
+// 한국 시간 시계
+function updateKRClock(){
+  var now=new Date();
+  var kr=new Date(now.toLocaleString('en-US',{timeZone:'Asia/Seoul'}));
+  var h=String(kr.getHours()).padStart(2,'0');
+  var m=String(kr.getMinutes()).padStart(2,'0');
+  var s=String(kr.getSeconds()).padStart(2,'0');
+  document.getElementById('kr-time').textContent=h+':'+m+':'+s;
+  var days=['일','월','화','수','목','금','토'];
+  var dateStr=(kr.getMonth()+1)+'월 '+kr.getDate()+'일 ('+days[kr.getDay()]+')';
+  document.getElementById('kr-date').textContent='🇰🇷 한국 시간 · '+dateStr;
+}
+updateKRClock();
+setInterval(updateKRClock,1000);
 
 function showScreen(name,btn){
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
@@ -230,7 +274,7 @@ function onTimerEnd(){
     records.push(rec);
     localStorage.setItem('records',JSON.stringify(records));
     studySecs=0;
-    sendNotif('휴식 시간!','집중 완료! 5분 쉬어가세요');
+    sendNotif('휴식 시간!','집중 완료! 5분 쉬어가세요','focus');
     isBreak=true;
     totalSecs=5*60;leftSecs=5*60;
     document.getElementById('timer-phase').textContent='휴식';
@@ -238,7 +282,7 @@ function onTimerEnd(){
     updateDisplay();
     startTimer();
   } else {
-    sendNotif('공부 시작!','휴식 끝! 다시 집중해요');
+    sendNotif('공부 시작!','휴식 끝! 다시 집중해요','rest');
     isBreak=false;
     totalSecs=currentMins*60;leftSecs=totalSecs;
     document.getElementById('timer-phase').textContent='집중';
@@ -273,7 +317,31 @@ function updateDisplay(){
   document.getElementById('session-count').textContent=sessionCount;
 }
 
-function sendNotif(title,body){
+function playAlarm(type){
+  try{
+    var ctx=new(window.AudioContext||window.webkitAudioContext)();
+    var patterns={
+      focus:[{f:880,t:0,d:0.15},{f:880,t:0.18,d:0.15},{f:1108,t:0.36,d:0.3}],
+      rest:[{f:660,t:0,d:0.2},{f:528,t:0.25,d:0.4}],
+      alarm:[{f:740,t:0,d:0.15},{f:740,t:0.18,d:0.15},{f:740,t:0.36,d:0.15},{f:988,t:0.54,d:0.35}]
+    };
+    var notes=patterns[type]||patterns.alarm;
+    notes.forEach(function(n){
+      var osc=ctx.createOscillator();
+      var gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.frequency.value=n.f;osc.type='sine';
+      gain.gain.setValueAtTime(0,ctx.currentTime+n.t);
+      gain.gain.linearRampToValueAtTime(0.4,ctx.currentTime+n.t+0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+n.t+n.d);
+      osc.start(ctx.currentTime+n.t);
+      osc.stop(ctx.currentTime+n.t+n.d+0.05);
+    });
+  }catch(e){}
+}
+
+function sendNotif(title,body,sound){
+  playAlarm(sound||'alarm');
   if(typeof Notification!=='undefined'&&Notification.permission==='granted'){
     try{new Notification(title,{body:body});}catch(e){}
   }
@@ -340,7 +408,7 @@ function scheduleAlarm(s){
   var now=new Date(),target=new Date();
   target.setHours(h,m,0,0);
   if(target<=now)target.setDate(target.getDate()+1);
-  setTimeout(function(){sendNotif('공부 시간!',s.name+' 공부를 시작할 시간이에요.');},target-now);
+  setTimeout(function(){sendNotif('공부 시간!',s.name+' 공부를 시작할 시간이에요.','alarm');},target-now);
 }
 
 function renderStats(){
