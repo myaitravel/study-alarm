@@ -113,10 +113,51 @@ input:checked+.slider:before{transform:translateX(18px);}
     <div id="kr-time" style="font-size:32px;font-weight:700;letter-spacing:2px;color:#185FA5;font-variant-numeric:tabular-nums;">00:00:00</div>
     <div id="kr-date" style="font-size:12px;color:#6b7280;margin-top:1px;"></div>
   </div>
-  <div class="mode-chips">
-    <div class="chip active" data-mins="25" data-label="집중 모드 · 25분" onclick="setMode(this)">포모도로</div>
-    <div class="chip" data-mins="10" data-label="단기 집중 · 10분" onclick="setMode(this)">단기 집중</div>
-    <div class="chip" data-mins="50" data-label="장기 집중 · 50분" onclick="setMode(this)">장기 집중</div>
+  <div class="mode-chips" style="justify-content:space-between;">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <div class="chip active" data-mins="25" data-mode="pomodoro" data-label="집중 모드 · 25분" onclick="setMode(this)">포모도로</div>
+      <div class="chip" data-mins="10" data-mode="short" data-label="단기 집중 · 10분" onclick="setMode(this)">단기 집중</div>
+      <div class="chip" data-mins="110" data-mode="long" data-label="장기 집중 · 110분" onclick="setMode(this)">장기 집중</div>
+    </div>
+    <button onclick="showAlarmPanel()" style="padding:6px 12px;border-radius:20px;border:1px solid #e5e7eb;font-size:13px;cursor:pointer;background:#f9fafb;color:#6b7280;font-family:inherit;white-space:nowrap;" id="alarm-chip-btn">🔔 알람</button>
+  </div>
+
+  <!-- 알람 패널 (토글) -->
+  <div id="alarm-panel" style="display:none;margin-bottom:12px;">
+    <div class="card" style="margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div style="font-size:14px;font-weight:600;" class="card-heading">⏰ 시각 알람</div>
+        <button onclick="toggleTimeAlarmForm()" style="font-size:12px;padding:4px 10px;border-radius:8px;border:1px solid #e5e7eb;background:#f9fafb;color:#6b7280;cursor:pointer;font-family:inherit;" id="ta-add-btn">+ 추가</button>
+      </div>
+      <div id="time-alarm-list"></div>
+      <div id="time-alarm-form" style="display:none;margin-top:8px;">
+        <input type="text" id="ta-label" placeholder="알람 이름 (예: 영어 공부)" style="width:100%;padding:8px 12px;border-radius:10px;border:1px solid #e5e7eb;font-size:14px;font-family:inherit;background:#fff;color:#1a1a1a;margin-bottom:8px;" class="alarm-input">
+        <input type="time" id="ta-time" value="08:00" style="width:100%;padding:8px 12px;border-radius:10px;border:1px solid #e5e7eb;font-size:14px;font-family:inherit;background:#fff;color:#1a1a1a;margin-bottom:8px;" class="alarm-input">
+        <div style="display:flex;gap:8px;">
+          <button onclick="toggleTimeAlarmForm()" style="flex:1;padding:8px;border-radius:10px;border:1px solid #e5e7eb;font-size:14px;cursor:pointer;font-family:inherit;background:#fff;color:#1a1a1a;" class="alarm-cancel-btn">취소</button>
+          <button onclick="addTimeAlarm()" style="flex:1;padding:8px;border-radius:10px;border:none;font-size:14px;cursor:pointer;font-family:inherit;background:#185FA5;color:#fff;">추가</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div style="font-size:14px;font-weight:600;" class="card-heading">⏳ 카운트다운</div>
+        <button onclick="toggleCdForm()" style="font-size:12px;padding:4px 10px;border-radius:8px;border:1px solid #e5e7eb;background:#f9fafb;color:#6b7280;cursor:pointer;font-family:inherit;" id="cd-add-btn">+ 추가</button>
+      </div>
+      <div id="countdown-alarm-list"></div>
+      <div id="cd-form" style="display:none;margin-top:8px;">
+        <input type="text" id="cd-label" placeholder="알람 이름 (예: 쉬는 시간)" style="width:100%;padding:8px 12px;border-radius:10px;border:1px solid #e5e7eb;font-size:14px;font-family:inherit;background:#fff;color:#1a1a1a;margin-bottom:8px;" class="alarm-input">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <input type="number" id="cd-min" min="1" max="999" value="10" style="flex:1;padding:8px 12px;border-radius:10px;border:1px solid #e5e7eb;font-size:14px;font-family:inherit;background:#fff;color:#1a1a1a;" class="alarm-input">
+          <span style="font-size:14px;color:#6b7280;">분 후</span>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button onclick="toggleCdForm()" style="flex:1;padding:8px;border-radius:10px;border:1px solid #e5e7eb;font-size:14px;cursor:pointer;font-family:inherit;background:#fff;color:#1a1a1a;" class="alarm-cancel-btn">취소</button>
+          <button onclick="addCountdownAlarm()" style="flex:1;padding:8px;border-radius:10px;border:none;font-size:14px;cursor:pointer;font-family:inherit;background:#185FA5;color:#fff;">시작</button>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:#9ca3af;padding:0 4px;margin-bottom:4px;">브라우저가 열려있을 때 소리가 울려요.</div>
   </div>
   <div class="card">
     <div class="timer-label" id="timer-mode-label">집중 모드 · 25분</div>
@@ -195,6 +236,8 @@ var subjects=JSON.parse(localStorage.getItem('subjects')||'[]');
 var records=JSON.parse(localStorage.getItem('records')||'[]');
 var sessionCount=parseInt(localStorage.getItem('sessionCount')||'0');
 var currentMins=25;
+var currentMode='pomodoro'; // pomodoro | short | long
+var longPhase=0; // 0=첫번째집중 1=휴식 2=두번째집중
 var totalSecs=25*60;
 var leftSecs=25*60;
 var isRunning=false;
@@ -230,8 +273,21 @@ function setMode(el){
   document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('active');});
   el.classList.add('active');
   currentMins=parseInt(el.getAttribute('data-mins'));
+  currentMode=el.getAttribute('data-mode')||'pomodoro';
+  longPhase=0;
   document.getElementById('timer-mode-label').textContent=el.getAttribute('data-label');
   resetTimer();
+}
+
+function showAlarmPanel(){
+  var p=document.getElementById('alarm-panel');
+  var btn=document.getElementById('alarm-chip-btn');
+  var open=p.style.display==='block';
+  p.style.display=open?'none':'block';
+  btn.style.background=open?'#f9fafb':'#E6F1FB';
+  btn.style.color=open?'#6b7280':'#185FA5';
+  btn.style.borderColor=open?'#e5e7eb':'#B5D4F4';
+  if(!open){renderAlarms();applyAlarmInputDark();}
 }
 
 function toggleTimer(){
@@ -266,6 +322,49 @@ function startTimer(){
 function onTimerEnd(){
   isRunning=false;
   document.getElementById('start-btn').textContent='시작';
+
+  if(currentMode==='long'){
+    // 장기집중: phase 0=50분집중 → 1=5분휴식 → 2=50분집중 → 완료
+    if(longPhase===0){
+      // 첫 50분 집중 완료 → 5분 휴식
+      studySecs+=50*60;
+      sendNotif('휴식 시간!','50분 집중 완료! 5분 쉬어가세요','focus');
+      longPhase=1;
+      isBreak=true;
+      totalSecs=5*60;leftSecs=5*60;
+      document.getElementById('timer-phase').textContent='휴식 (5분)';
+      document.getElementById('ring').style.stroke='#0F6E56';
+      updateDisplay();
+      startTimer();
+    } else if(longPhase===1){
+      // 5분 휴식 완료 → 두번째 50분 집중
+      sendNotif('다시 집중!','휴식 끝! 50분 더 집중해요','rest');
+      longPhase=2;
+      isBreak=false;
+      totalSecs=50*60;leftSecs=totalSecs;
+      document.getElementById('timer-phase').textContent='집중 (2/2)';
+      document.getElementById('ring').style.stroke='#185FA5';
+      updateDisplay();
+      startTimer();
+    } else {
+      // 두번째 50분 완료 → 장기집중 전체 완료
+      studySecs+=50*60;
+      sessionCount++;
+      localStorage.setItem('sessionCount',sessionCount);
+      var subj=document.getElementById('timer-subject-sel').value||'기타';
+      var rec={id:Date.now(),subjectName:subj,duration:studySecs,date:new Date().toISOString()};
+      records.push(rec);
+      localStorage.setItem('records',JSON.stringify(records));
+      studySecs=0;
+      longPhase=0;
+      sendNotif('장기 집중 완료!','110분 집중 완료! 충분히 쉬어가세요 🎉','focus');
+      document.getElementById('timer-phase').textContent='완료!';
+      updateDisplay();
+    }
+    return;
+  }
+
+  // 포모도로 / 단기집중 기존 로직
   if(!isBreak){
     sessionCount++;
     localStorage.setItem('sessionCount',sessionCount);
@@ -299,10 +398,11 @@ function pauseTimer(){
 
 function resetTimer(){
   clearInterval(timerId);
-  isRunning=false;isBreak=false;studySecs=0;
-  totalSecs=currentMins*60;leftSecs=totalSecs;
+  isRunning=false;isBreak=false;studySecs=0;longPhase=0;
+  var secs=(currentMode==='long')?50*60:currentMins*60;
+  totalSecs=secs;leftSecs=secs;
   document.getElementById('start-btn').textContent='시작';
-  document.getElementById('timer-phase').textContent='집중';
+  document.getElementById('timer-phase').textContent=currentMode==='long'?'집중 (1/2)':'집중';
   document.getElementById('ring').style.stroke='#185FA5';
   updateDisplay();
 }
@@ -454,9 +554,174 @@ function renderStats(){
   }
 }
 
+// ===== 알람 탭 =====
+var timeAlarms=JSON.parse(localStorage.getItem('timeAlarms')||'[]');
+var countdownAlarms=JSON.parse(localStorage.getItem('countdownAlarms')||'[]');
+var alarmTimers={};
+
+function toggleTimeAlarmForm(){
+  var f=document.getElementById('time-alarm-form');
+  f.style.display=f.style.display==='block'?'none':'block';
+}
+function toggleCdForm(){
+  var f=document.getElementById('cd-form');
+  f.style.display=f.style.display==='block'?'none':'block';
+}
+
+function addTimeAlarm(){
+  var label=document.getElementById('ta-label').value.trim()||'알람';
+  var time=document.getElementById('ta-time').value;
+  if(!time)return;
+  var alarm={id:Date.now(),label:label,time:time,enabled:true};
+  timeAlarms.push(alarm);
+  localStorage.setItem('timeAlarms',JSON.stringify(timeAlarms));
+  document.getElementById('ta-label').value='';
+  document.getElementById('time-alarm-form').style.display='none';
+  scheduleTimeAlarm(alarm);
+  renderAlarms();
+}
+
+function scheduleTimeAlarm(alarm){
+  if(alarmTimers['t'+alarm.id])clearTimeout(alarmTimers['t'+alarm.id]);
+  if(!alarm.enabled)return;
+  var parts=alarm.time.split(':');
+  var h=parseInt(parts[0]),m=parseInt(parts[1]);
+  var now=new Date(),target=new Date();
+  target.setHours(h,m,0,0);
+  if(target<=now)target.setDate(target.getDate()+1);
+  var diff=target-now;
+  alarmTimers['t'+alarm.id]=setTimeout(function(){
+    sendNotif('⏰ '+alarm.label, alarm.time+' 알람이에요!','alarm');
+    // 다음날 재예약
+    var idx=timeAlarms.findIndex(function(a){return a.id===alarm.id;});
+    if(idx>=0&&timeAlarms[idx].enabled)scheduleTimeAlarm(timeAlarms[idx]);
+    renderAlarms();
+  },diff);
+}
+
+function addCountdownAlarm(){
+  var label=document.getElementById('cd-label').value.trim()||'카운트다운';
+  var mins=parseInt(document.getElementById('cd-min').value)||10;
+  var alarm={id:Date.now(),label:label,mins:mins,endAt:Date.now()+mins*60000,active:true};
+  countdownAlarms.push(alarm);
+  localStorage.setItem('countdownAlarms',JSON.stringify(countdownAlarms));
+  document.getElementById('cd-label').value='';
+  document.getElementById('cd-min').value='10';
+  document.getElementById('cd-form').style.display='none';
+  startCountdown(alarm);
+  renderAlarms();
+}
+
+function startCountdown(alarm){
+  if(alarmTimers['c'+alarm.id])clearTimeout(alarmTimers['c'+alarm.id]);
+  var remaining=alarm.endAt-Date.now();
+  if(remaining<=0)return;
+  alarmTimers['c'+alarm.id]=setTimeout(function(){
+    sendNotif('⏳ '+alarm.label, alarm.mins+'분 카운트다운 완료!','focus');
+    var idx=countdownAlarms.findIndex(function(a){return a.id===alarm.id;});
+    if(idx>=0){countdownAlarms[idx].active=false;localStorage.setItem('countdownAlarms',JSON.stringify(countdownAlarms));}
+    renderAlarms();
+  },remaining);
+  // 1초마다 화면 갱신
+  alarmTimers['c'+alarm.id+'_tick']=setInterval(function(){
+    var idx=countdownAlarms.findIndex(function(a){return a.id===alarm.id;});
+    if(idx<0||!countdownAlarms[idx].active){clearInterval(alarmTimers['c'+alarm.id+'_tick']);return;}
+    renderAlarms();
+  },1000);
+}
+
+function deleteTimeAlarm(id){
+  if(alarmTimers['t'+id])clearTimeout(alarmTimers['t'+id]);
+  timeAlarms=timeAlarms.filter(function(a){return a.id!==id;});
+  localStorage.setItem('timeAlarms',JSON.stringify(timeAlarms));
+  renderAlarms();
+}
+
+function deleteCountdownAlarm(id){
+  if(alarmTimers['c'+id])clearTimeout(alarmTimers['c'+id]);
+  if(alarmTimers['c'+id+'_tick'])clearInterval(alarmTimers['c'+id+'_tick']);
+  countdownAlarms=countdownAlarms.filter(function(a){return a.id!==id;});
+  localStorage.setItem('countdownAlarms',JSON.stringify(countdownAlarms));
+  renderAlarms();
+}
+
+function toggleTimeAlarmEnabled(id,enabled){
+  var idx=timeAlarms.findIndex(function(a){return a.id===id;});
+  if(idx<0)return;
+  timeAlarms[idx].enabled=enabled;
+  localStorage.setItem('timeAlarms',JSON.stringify(timeAlarms));
+  if(enabled){
+    if(typeof Notification!=='undefined'&&Notification.permission!=='granted')Notification.requestPermission();
+    scheduleTimeAlarm(timeAlarms[idx]);
+  } else {
+    if(alarmTimers['t'+id])clearTimeout(alarmTimers['t'+id]);
+  }
+}
+
+function formatCountdown(endAt){
+  var diff=Math.max(0,Math.ceil((endAt-Date.now())/1000));
+  var m=Math.floor(diff/60).toString().padStart(2,'0');
+  var s=(diff%60).toString().padStart(2,'0');
+  return m+':'+s;
+}
+
+function renderAlarms(){
+  // 시각 알람
+  var taList=document.getElementById('time-alarm-list');
+  if(!taList)return;
+  if(timeAlarms.length===0){taList.innerHTML='<div class="empty" style="padding:1rem 0;">아직 알람이 없어요</div>';}
+  else{
+    taList.innerHTML=timeAlarms.map(function(a){
+      return '<div class="subject-row">'
+        +'<div style="font-size:18px;font-weight:700;color:#185FA5;min-width:52px;">'+a.time+'</div>'
+        +'<div class="subject-name">'+a.label+'</div>'
+        +'<label class="toggle"><input type="checkbox"'+(a.enabled?' checked':'')+' onchange="toggleTimeAlarmEnabled('+a.id+',this.checked)"><span class="slider"></span></label>'
+        +'<button onclick="deleteTimeAlarm('+a.id+')" style="background:none;border:none;font-size:16px;cursor:pointer;color:#9ca3af;padding:0 4px;">✕</button>'
+        +'</div>';
+    }).join('');
+  }
+  // 카운트다운 알람
+  var cdList=document.getElementById('countdown-alarm-list');
+  if(!cdList)return;
+  var active=countdownAlarms.filter(function(a){return a.active;});
+  if(active.length===0){cdList.innerHTML='<div class="empty" style="padding:1rem 0;">진행 중인 카운트다운 없음</div>';}
+  else{
+    cdList.innerHTML=active.map(function(a){
+      return '<div class="subject-row">'
+        +'<div style="font-size:18px;font-weight:700;color:#0F6E56;min-width:52px;font-variant-numeric:tabular-nums;">'+formatCountdown(a.endAt)+'</div>'
+        +'<div class="subject-name">'+a.label+' ('+a.mins+'분)</div>'
+        +'<button onclick="deleteCountdownAlarm('+a.id+')" style="background:none;border:none;font-size:16px;cursor:pointer;color:#9ca3af;padding:0 4px;">✕</button>'
+        +'</div>';
+    }).join('');
+  }
+}
+
+// 다크모드 알람 입력 스타일
+function applyAlarmInputDark(){
+  var dark=window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches;
+  document.querySelectorAll('.alarm-input').forEach(function(el){
+    el.style.background=dark?'#3a3a3c':'#fff';
+    el.style.color=dark?'#f2f2f7':'#1a1a1a';
+    el.style.borderColor=dark?'#48484a':'#e5e7eb';
+  });
+  document.querySelectorAll('.alarm-cancel-btn').forEach(function(el){
+    el.style.background=dark?'#3a3a3c':'#fff';
+    el.style.color=dark?'#f2f2f7':'#1a1a1a';
+    el.style.borderColor=dark?'#48484a':'#e5e7eb';
+  });
+}
+if(window.matchMedia)window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',applyAlarmInputDark);
+
+// 저장된 시각 알람 재예약
+timeAlarms.forEach(function(a){if(a.enabled)scheduleTimeAlarm(a);});
+// 저장된 카운트다운 중 아직 유효한 것 재시작
+countdownAlarms.forEach(function(a){if(a.active&&a.endAt>Date.now())startCountdown(a);else if(a.active){a.active=false;}});
+localStorage.setItem('countdownAlarms',JSON.stringify(countdownAlarms));
+
 buildColorRow();
 renderSubjects();
 updateDisplay();
+renderAlarms();
 </script>
 </body>
 </html>
