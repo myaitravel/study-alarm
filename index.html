@@ -8,110 +8,171 @@
 <meta name="apple-mobile-web-app-title" content="공부알람">
 <title>공부 알람</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f7fa;color:#1a1a1a;}
-.app{max-width:390px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:#fff;}
-.screen{display:none;flex:1;flex-direction:column;padding:1.5rem 1rem 5rem;}
-.screen.active{display:flex;}
-.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:390px;display:flex;background:#fff;border-top:1px solid #e5e7eb;z-index:10;}
-.nav-btn{flex:1;padding:10px 0 12px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;background:none;border:none;color:#9ca3af;font-size:10px;font-family:inherit;}
-.nav-btn.active{color:#185FA5;}
-.nav-icon{font-size:20px;}
-.page-title{font-size:22px;font-weight:600;color:#1a1a1a;margin-bottom:1.5rem;}
-.card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:1rem 1.25rem;margin-bottom:12px;}
-.timer-ring-wrap{display:flex;justify-content:center;margin:1rem 0 1.5rem;}
-.timer-label{font-size:13px;color:#6b7280;text-align:center;margin-bottom:0.5rem;}
-.timer-btns{display:flex;gap:12px;justify-content:center;margin-top:1rem;}
-.timer-btns button{padding:10px 28px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;font-size:15px;font-family:inherit;cursor:pointer;color:#1a1a1a;}
-.timer-btns .btn-primary{background:#185FA5;color:#fff;border-color:#185FA5;}
-.mode-chips{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;}
-.chip{padding:6px 14px;border-radius:20px;border:1px solid #e5e7eb;font-size:13px;cursor:pointer;background:#f9fafb;color:#6b7280;}
-.chip.active{background:#E6F1FB;color:#185FA5;border-color:#B5D4F4;}
-.subject-select{width:100%;padding:8px 12px;border-radius:10px;border:1px solid #e5e7eb;font-size:14px;font-family:inherit;background:#fff;color:#1a1a1a;margin-bottom:0.5rem;}
-.subject-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f3f4f6;}
-.subject-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-.subject-name{flex:1;font-size:15px;color:#1a1a1a;}
-.subject-time{font-size:13px;color:#6b7280;}
-.toggle{position:relative;width:40px;height:22px;}
-.toggle input{opacity:0;width:0;height:0;}
-.slider{position:absolute;inset:0;background:#d1d5db;border-radius:11px;cursor:pointer;transition:.3s;}
-.slider:before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.3s;}
-input:checked+.slider{background:#185FA5;}
-input:checked+.slider:before{transform:translateX(18px);}
-.add-btn{width:100%;padding:10px;border-radius:10px;border:1px dashed #d1d5db;background:transparent;font-size:14px;color:#6b7280;cursor:pointer;margin-top:8px;font-family:inherit;}
-.add-form{display:none;margin-top:12px;}
-.add-form input{width:100%;padding:8px 12px;border-radius:10px;border:1px solid #e5e7eb;font-size:14px;font-family:inherit;background:#fff;color:#1a1a1a;margin-bottom:8px;}
-.add-form .row{display:flex;gap:8px;}
-.add-form .row button{flex:1;padding:8px;border-radius:10px;border:1px solid #e5e7eb;font-size:14px;cursor:pointer;font-family:inherit;background:#fff;color:#1a1a1a;}
-.add-form .row .confirm{background:#185FA5;color:#fff;border-color:#185FA5;}
-.color-row{display:flex;gap:8px;margin-bottom:8px;}
-.color-opt{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;}
-.color-opt.sel{border-color:#1a1a1a;}
-.time-input{width:100%;padding:8px 12px;border-radius:10px;border:1px solid #e5e7eb;font-size:14px;font-family:inherit;background:#fff;color:#1a1a1a;margin-bottom:8px;}
-.stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:1rem;}
-.stat-card{background:#f9fafb;border-radius:10px;padding:1rem;text-align:center;}
-.stat-val{font-size:24px;font-weight:600;color:#1a1a1a;}
-.stat-lbl{font-size:12px;color:#6b7280;margin-top:2px;}
-.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.bar-label{font-size:13px;color:#6b7280;width:56px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.bar-track{flex:1;height:8px;background:#f3f4f6;border-radius:4px;overflow:hidden;}
-.bar-fill{height:100%;border-radius:4px;}
-.bar-val{font-size:12px;color:#6b7280;min-width:32px;}
-.record-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f3f4f6;}
-.record-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.record-name{flex:1;font-size:14px;color:#1a1a1a;}
-.record-dur{font-size:13px;color:#6b7280;}
-.empty{text-align:center;color:#9ca3af;font-size:14px;padding:2rem 0;}
-@media(prefers-color-scheme:dark){
-  body,html{background:#1c1c1e;color:#f2f2f7;}
-  .app{background:#1c1c1e;}
-  .nav{background:#2c2c2e;border-color:#3a3a3c;}
-  .nav-btn{color:#8e8e93;}
-  .nav-btn.active{color:#64B5F6;}
-  .card{background:#2c2c2e;border-color:#3a3a3c;}
-  .chip{background:#3a3a3c;border-color:#48484a;color:#aeaeb2;}
-  .chip.active{background:#0c447c;color:#64B5F6;border-color:#185FA5;}
-  .subject-select,.add-form input,.time-input{background:#3a3a3c;border-color:#48484a;color:#f2f2f7;}
-  .subject-row,.record-row{border-color:#3a3a3c;}
-  .subject-row:last-of-type,.record-row:last-of-type{border-color:transparent;}
-  .stat-card{background:#3a3a3c;}
-  .stat-val{color:#f2f2f7;}
-  .stat-lbl{color:#aeaeb2;}
-  .page-title,.record-name,.subject-name{color:#f2f2f7;}
-  .timer-label{color:#aeaeb2;}
-  .bar-track{background:#48484a;}
-  .bar-label,.bar-val,.record-dur,.subject-time{color:#aeaeb2;}
-  .add-btn{border-color:#48484a;color:#aeaeb2;}
-  .add-form .row button,.timer-btns button{background:#3a3a3c;border-color:#48484a;color:#f2f2f7;}
-  .timer-btns .btn-primary{background:#185FA5;color:#fff;border-color:#185FA5;}
-  .add-form .row .confirm{background:#185FA5;color:#fff;border-color:#185FA5;}
-  .empty{color:#636366;}
-  #kr-time{color:#64B5F6;}
-  #kr-date{color:#aeaeb2;}
-  /* 통계 카드 인라인 색상 */
-  #screen-stats .card div[style*="color:#1a1a1a"]{color:#f2f2f7!important;}
-  #session-count{color:#f2f2f7;}
-  /* 카드 소제목 */
-  .card-heading{color:#f2f2f7!important;}
-  .card-sub{color:#aeaeb2!important;}
-  /* 세션 카운트 */
-  #session-count{color:#f2f2f7!important;}
-  /* SVG 타이머 텍스트 */
-  #timer-text{fill:#f2f2f7!important;}
-  #timer-phase{fill:#aeaeb2!important;}
-  /* SVG 링 배경 */
-  circle[stroke="#f3f4f6"]{stroke:#3a3a3c;}
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap');
+
+:root{
+  --bg:#0e0e11;
+  --bg2:#16161a;
+  --bg3:#1e1e24;
+  --bg4:#26262f;
+  --border:#2e2e38;
+  --border2:#3a3a48;
+  --text:#f0f0f5;
+  --text2:#a0a0b8;
+  --text3:#606078;
+  --accent:#5b8fff;
+  --accent2:#3d6ee0;
+  --accent-glow:rgba(91,143,255,0.18);
+  --green:#3ecf8e;
+  --green-dim:rgba(62,207,142,0.15);
+  --amber:#f5a623;
+  --radius:16px;
+  --radius-sm:10px;
 }
+[data-theme="light"]{
+  --bg:#f5f7fa;
+  --bg2:#ffffff;
+  --bg3:#f0f2f5;
+  --bg4:#e5e8ee;
+  --border:#e2e5ec;
+  --border2:#d0d5e0;
+  --text:#1a1a2e;
+  --text2:#4a4a6a;
+  --text3:#9090aa;
+  --accent:#3a6fd8;
+  --accent2:#2856b8;
+  --accent-glow:rgba(58,111,216,0.15);
+  --green:#1a9e6a;
+  --amber:#d4880a;
+}
+/* 라이트 모드 nav 블러 배경 */
+[data-theme="light"] .nav{background:rgba(245,247,250,0.92);}
+
+/* 테마 토글 버튼 */
+.theme-toggle{
+  position:fixed;top:16px;right:16px;
+  width:36px;height:36px;
+  border-radius:50%;
+  border:1px solid var(--border2);
+  background:var(--bg3);
+  color:var(--text2);
+  font-size:16px;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  z-index:100;
+  transition:all .2s;
+  box-shadow:0 2px 8px rgba(0,0,0,0.15);
+}
+.theme-toggle:hover{background:var(--bg4);color:var(--text);}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--text);}
+body{font-family:'DM Sans',-apple-system,sans-serif;}
+.app{max-width:390px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--bg);}
+.screen{display:none;flex:1;flex-direction:column;padding:1.5rem 1rem 5.5rem;}
+.screen.active{display:flex;}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:390px;display:flex;background:rgba(14,14,17,0.92);border-top:1px solid var(--border);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:10;}
+.nav-btn{flex:1;padding:10px 0 14px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;background:none;border:none;color:var(--text3);font-size:10px;font-family:inherit;transition:color .2s;}
+.nav-btn.active{color:var(--accent);}
+.nav-icon{font-size:20px;}
+.page-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:1.5rem;letter-spacing:-0.3px;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:12px;}
+.timer-ring-wrap{display:flex;justify-content:center;margin:0.5rem 0 1.25rem;}
+.timer-label{font-size:11px;color:var(--text3);text-align:center;margin-bottom:0.5rem;letter-spacing:.8px;text-transform:uppercase;}
+.timer-btns{display:flex;gap:10px;justify-content:center;margin-top:1rem;}
+.timer-btns button{padding:11px 28px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg3);font-size:15px;font-weight:500;font-family:inherit;cursor:pointer;color:var(--text2);transition:all .18s;}
+.timer-btns button:hover{background:var(--bg4);color:var(--text);}
+.timer-btns .btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 0 22px var(--accent-glow);}
+.timer-btns .btn-primary:hover{background:var(--accent2);border-color:var(--accent2);}
+.mode-chips{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;}
+.chip{padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:13px;font-weight:500;cursor:pointer;background:var(--bg3);color:var(--text3);transition:all .18s;}
+.chip:hover{border-color:var(--border2);color:var(--text2);}
+.chip.active{background:var(--accent-glow);color:var(--accent);border-color:var(--accent);}
+.subject-select{width:100%;padding:9px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);font-size:14px;font-family:inherit;background:var(--bg3);color:var(--text);margin-bottom:0.5rem;outline:none;transition:border-color .18s;}
+.subject-select:focus{border-color:var(--accent);}
+.subject-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);}
+.subject-row:last-child{border-bottom:none;}
+.subject-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.subject-name{flex:1;font-size:15px;font-weight:500;color:var(--text);}
+.subject-time{font-size:13px;color:var(--text3);}
+.toggle{position:relative;width:42px;height:24px;}
+.toggle input{opacity:0;width:0;height:0;}
+.slider{position:absolute;inset:0;background:var(--bg4);border-radius:12px;cursor:pointer;transition:.25s;border:1px solid var(--border2);}
+.slider:before{content:'';position:absolute;height:18px;width:18px;left:2px;bottom:2px;background:var(--text3);border-radius:50%;transition:.25s;}
+input:checked+.slider{background:var(--accent);border-color:var(--accent);}
+input:checked+.slider:before{transform:translateX(18px);background:#fff;}
+.add-btn{width:100%;padding:10px;border-radius:var(--radius-sm);border:1px dashed var(--border2);background:transparent;font-size:14px;color:var(--text3);cursor:pointer;margin-top:8px;font-family:inherit;transition:all .18s;}
+.add-btn:hover{border-color:var(--accent);color:var(--accent);}
+.add-form{display:none;margin-top:12px;}
+.add-form input{width:100%;padding:9px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);font-size:14px;font-family:inherit;background:var(--bg3);color:var(--text);margin-bottom:8px;outline:none;transition:border-color .18s;}
+.add-form input:focus{border-color:var(--accent);}
+.add-form .row{display:flex;gap:8px;}
+.add-form .row button{flex:1;padding:9px;border-radius:var(--radius-sm);border:1px solid var(--border2);font-size:14px;cursor:pointer;font-family:inherit;background:var(--bg3);color:var(--text2);transition:all .18s;}
+.add-form .row button:hover{background:var(--bg4);}
+.add-form .row .confirm{background:var(--accent);color:#fff;border-color:var(--accent);}
+.add-form .row .confirm:hover{background:var(--accent2);}
+.color-row{display:flex;gap:8px;margin-bottom:8px;}
+.color-opt{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s;}
+.color-opt:hover{transform:scale(1.15);}
+.color-opt.sel{border-color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,0.35);}
+.time-input{width:100%;padding:9px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);font-size:14px;font-family:inherit;background:var(--bg3);color:var(--text);margin-bottom:8px;outline:none;transition:border-color .18s;}
+.time-input:focus{border-color:var(--accent);}
+.stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:1rem;}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;text-align:center;}
+.stat-val{font-size:26px;font-weight:700;color:var(--text);font-family:'DM Mono',monospace;}
+.stat-lbl{font-size:11px;color:var(--text3);margin-top:3px;text-transform:uppercase;letter-spacing:.4px;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.bar-label{font-size:13px;color:var(--text2);width:56px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar-track{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;}
+.bar-val{font-size:12px;color:var(--text3);min-width:32px;font-family:'DM Mono',monospace;}
+.record-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.record-row:last-child{border-bottom:none;}
+.record-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.record-name{flex:1;font-size:14px;font-weight:500;color:var(--text);}
+.record-dur{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;}
+.empty{text-align:center;color:var(--text3);font-size:14px;padding:2rem 0;}
+#kr-time{color:var(--accent)!important;font-family:'DM Mono',monospace;}
+#kr-date{color:var(--text3)!important;}
+.card-heading{color:var(--text)!important;}
+.card-sub{color:var(--text3)!important;}
+#session-count{color:var(--text)!important;}
+#timer-text{fill:var(--text)!important;}
+#timer-phase{fill:var(--text3)!important;}
+circle[stroke="#f3f4f6"]{stroke:var(--bg4)!important;}
+.alarm-input{background:var(--bg3)!important;color:var(--text)!important;border-color:var(--border)!important;}
+.alarm-input:focus{border-color:var(--accent)!important;outline:none;}
+.alarm-cancel-btn{background:var(--bg3)!important;color:var(--text2)!important;border-color:var(--border2)!important;}
+#snackbar-container{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:358px;display:flex;flex-direction:column;gap:8px;z-index:9999;pointer-events:none;}
+.snackbar{display:flex;align-items:center;gap:12px;background:var(--bg3);color:var(--text);padding:13px 16px;border-radius:14px;border:1px solid var(--border2);box-shadow:0 8px 32px rgba(0,0,0,0.5);pointer-events:auto;position:relative;overflow:hidden;animation:snack-in 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;font-size:14px;font-family:'DM Sans',-apple-system,sans-serif;}
+.snackbar.hide{animation:snack-out 0.28s ease-in forwards;}
+.snackbar-icon{font-size:20px;flex-shrink:0;}
+.snackbar-body{flex:1;}
+.snackbar-title{font-weight:600;font-size:14px;line-height:1.3;}
+.snackbar-msg{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.3;}
+.snackbar-close{background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:0 0 0 4px;line-height:1;flex-shrink:0;}
+.snackbar-close:hover{color:var(--text);}
+.snackbar-progress{position:absolute;bottom:0;left:0;height:2px;border-radius:0 0 14px 14px;animation:snack-prog var(--dur,4s) linear forwards;}
+.snackbar[data-type="focus"]{border-left:3px solid var(--accent);}
+.snackbar[data-type="rest"]{border-left:3px solid var(--green);}
+.snackbar[data-type="alarm"]{border-left:3px solid var(--amber);}
+.snackbar[data-type="focus"] .snackbar-progress{background:var(--accent);}
+.snackbar[data-type="rest"] .snackbar-progress{background:var(--green);}
+.snackbar[data-type="alarm"] .snackbar-progress{background:var(--amber);}
+@keyframes snack-in{from{opacity:0;transform:translateY(20px) scale(0.95);}to{opacity:1;transform:translateY(0) scale(1);}}
+@keyframes snack-out{from{opacity:1;transform:translateY(0) scale(1);}to{opacity:0;transform:translateY(12px) scale(0.95);}}
+@keyframes snack-prog{from{width:100%;}to{width:0%;}}
 </style>
 </head>
 <body>
+<div id="snackbar-container"></div>
+<button class="theme-toggle" id="theme-btn" onclick="toggleTheme()" title="테마 전환">🌙</button>
 <div class="app">
 
 <div class="screen active" id="screen-timer">
   <div class="page-title">타이머</div>
   <div id="kr-clock" style="text-align:center;margin:-4px 0 10px;line-height:1.3;">
-    <div id="kr-time" style="font-size:32px;font-weight:700;letter-spacing:2px;color:#185FA5;font-variant-numeric:tabular-nums;">00:00:00</div>
-    <div id="kr-date" style="font-size:12px;color:#6b7280;margin-top:1px;"></div>
+    <div id="kr-time" style="font-size:32px;font-weight:700;letter-spacing:2px;font-variant-numeric:tabular-nums;">00:00:00</div>
+    <div id="kr-date" style="font-size:12px;margin-top:1px;"></div>
   </div>
   <div class="mode-chips" style="justify-content:space-between;">
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -119,7 +180,7 @@ input:checked+.slider:before{transform:translateX(18px);}
       <div class="chip" data-mins="10" data-mode="short" data-label="단기 집중 · 10분" onclick="setMode(this)">단기 집중</div>
       <div class="chip" data-mins="110" data-mode="long" data-label="장기 집중 · 110분" onclick="setMode(this)">장기 집중</div>
     </div>
-    <button onclick="showAlarmPanel()" style="padding:6px 12px;border-radius:20px;border:1px solid #e5e7eb;font-size:13px;cursor:pointer;background:#f9fafb;color:#6b7280;font-family:inherit;white-space:nowrap;" id="alarm-chip-btn">🔔 알람</button>
+    <button onclick="showAlarmPanel()" id="alarm-chip-btn">🔔 알람</button>
   </div>
 
   <!-- 알람 패널 (토글) -->
@@ -127,7 +188,7 @@ input:checked+.slider:before{transform:translateX(18px);}
     <div class="card" style="margin-bottom:8px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
         <div style="font-size:14px;font-weight:600;" class="card-heading">⏰ 시각 알람</div>
-        <button onclick="toggleTimeAlarmForm()" style="font-size:12px;padding:4px 10px;border-radius:8px;border:1px solid #e5e7eb;background:#f9fafb;color:#6b7280;cursor:pointer;font-family:inherit;" id="ta-add-btn">+ 추가</button>
+        <button onclick="toggleTimeAlarmForm()" style="font-size:12px;padding:4px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text3);cursor:pointer;font-family:inherit;" id="ta-add-btn">+ 추가</button>
       </div>
       <div id="time-alarm-list"></div>
       <div id="time-alarm-form" style="display:none;margin-top:8px;">
@@ -135,14 +196,14 @@ input:checked+.slider:before{transform:translateX(18px);}
         <input type="time" id="ta-time" value="08:00" style="width:100%;padding:8px 12px;border-radius:10px;border:1px solid #e5e7eb;font-size:14px;font-family:inherit;background:#fff;color:#1a1a1a;margin-bottom:8px;" class="alarm-input">
         <div style="display:flex;gap:8px;">
           <button onclick="toggleTimeAlarmForm()" style="flex:1;padding:8px;border-radius:10px;border:1px solid #e5e7eb;font-size:14px;cursor:pointer;font-family:inherit;background:#fff;color:#1a1a1a;" class="alarm-cancel-btn">취소</button>
-          <button onclick="addTimeAlarm()" style="flex:1;padding:8px;border-radius:10px;border:none;font-size:14px;cursor:pointer;font-family:inherit;background:#185FA5;color:#fff;">추가</button>
+          <button onclick="addTimeAlarm()" style="flex:1;padding:8px;border-radius:10px;border:none;font-size:14px;cursor:pointer;font-family:inherit;background:var(--accent);color:#fff;">추가</button>
         </div>
       </div>
     </div>
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
         <div style="font-size:14px;font-weight:600;" class="card-heading">⏳ 카운트다운</div>
-        <button onclick="toggleCdForm()" style="font-size:12px;padding:4px 10px;border-radius:8px;border:1px solid #e5e7eb;background:#f9fafb;color:#6b7280;cursor:pointer;font-family:inherit;" id="cd-add-btn">+ 추가</button>
+        <button onclick="toggleCdForm()" style="font-size:12px;padding:4px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text3);cursor:pointer;font-family:inherit;" id="cd-add-btn">+ 추가</button>
       </div>
       <div id="countdown-alarm-list"></div>
       <div id="cd-form" style="display:none;margin-top:8px;">
@@ -153,22 +214,22 @@ input:checked+.slider:before{transform:translateX(18px);}
         </div>
         <div style="display:flex;gap:8px;">
           <button onclick="toggleCdForm()" style="flex:1;padding:8px;border-radius:10px;border:1px solid #e5e7eb;font-size:14px;cursor:pointer;font-family:inherit;background:#fff;color:#1a1a1a;" class="alarm-cancel-btn">취소</button>
-          <button onclick="addCountdownAlarm()" style="flex:1;padding:8px;border-radius:10px;border:none;font-size:14px;cursor:pointer;font-family:inherit;background:#185FA5;color:#fff;">시작</button>
+          <button onclick="addCountdownAlarm()" style="flex:1;padding:8px;border-radius:10px;border:none;font-size:14px;cursor:pointer;font-family:inherit;background:var(--accent);color:#fff;">시작</button>
         </div>
       </div>
     </div>
-    <div style="font-size:11px;color:#9ca3af;padding:0 4px;margin-bottom:4px;">브라우저가 열려있을 때 소리가 울려요.</div>
+    <div style="font-size:11px;color:var(--text3);padding:0 4px;margin-bottom:4px;">브라우저가 열려있을 때 소리가 울려요.</div>
   </div>
   <div class="card">
     <div class="timer-label" id="timer-mode-label">집중 모드 · 25분</div>
     <div class="timer-ring-wrap">
       <svg width="200" height="200" viewBox="0 0 200 200">
         <circle cx="100" cy="100" r="88" fill="none" stroke="#f3f4f6" stroke-width="10"/>
-        <circle id="ring" cx="100" cy="100" r="88" fill="none" stroke="#185FA5" stroke-width="10"
+        <circle id="ring" cx="100" cy="100" r="88" fill="none" stroke="var(--accent)" stroke-width="10"
           stroke-dasharray="553" stroke-dashoffset="0"
           stroke-linecap="round" transform="rotate(-90 100 100)"/>
-        <text x="100" y="95" text-anchor="middle" font-size="42" font-weight="600" fill="currentColor" font-family="-apple-system,sans-serif" id="timer-text" style="fill:#1a1a1a;">25:00</text>
-        <text x="100" y="120" text-anchor="middle" font-size="13" font-family="-apple-system,sans-serif" id="timer-phase" style="fill:#6b7280;">집중</text>
+        <text x="100" y="95" text-anchor="middle" font-size="42" font-weight="600" fill="var(--text)" font-family="-apple-system,sans-serif" id="timer-text" style="fill:var(--text);">25:00</text>
+        <text x="100" y="120" text-anchor="middle" font-size="13" font-family="-apple-system,sans-serif" id="timer-phase" style="fill:var(--text3);">집중</text>
       </svg>
     </div>
     <select class="subject-select" id="timer-subject-sel">
@@ -180,8 +241,8 @@ input:checked+.slider:before{transform:translateX(18px);}
     </div>
   </div>
   <div class="card" style="text-align:center;">
-    <div style="font-size:13px;color:#6b7280;" class="card-sub">오늘 완료한 세션</div>
-    <div style="font-size:28px;font-weight:600;color:#1a1a1a;margin-top:4px;" id="session-count">0</div>
+    <div style="font-size:13px;" class="card-sub">오늘 완료한 세션</div>
+    <div style="font-size:28px;font-weight:600;margin-top:4px;" id="session-count">0</div>
   </div>
 </div>
 
@@ -200,7 +261,7 @@ input:checked+.slider:before{transform:translateX(18px);}
       </div>
     </div>
   </div>
-  <div style="font-size:12px;color:#9ca3af;padding:0 4px;">알람은 브라우저 알림으로 전송돼요. 알림 허용이 필요해요.</div>
+  <div style="font-size:12px;color:var(--text3);padding:0 4px;">알람은 브라우저 알림으로 전송돼요. 알림 허용이 필요해요.</div>
 </div>
 
 <div class="screen" id="screen-stats">
@@ -212,11 +273,11 @@ input:checked+.slider:before{transform:translateX(18px);}
     <div class="stat-card"><div class="stat-val" id="total-sess">0</div><div class="stat-lbl">누적 세션</div></div>
   </div>
   <div class="card">
-    <div style="font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:12px;" class="card-heading">과목별 누적</div>
+    <div style="font-size:14px;font-weight:600;margin-bottom:12px;" class="card-heading">과목별 누적</div>
     <div id="subject-bars"><div class="empty">아직 기록이 없어요</div></div>
   </div>
   <div class="card">
-    <div style="font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:12px;" class="card-heading">최근 기록</div>
+    <div style="font-size:14px;font-weight:600;margin-bottom:12px;" class="card-heading">최근 기록</div>
     <div id="records-list"><div class="empty">아직 기록이 없어요</div></div>
   </div>
 </div>
@@ -284,9 +345,7 @@ function showAlarmPanel(){
   var btn=document.getElementById('alarm-chip-btn');
   var open=p.style.display==='block';
   p.style.display=open?'none':'block';
-  btn.style.background=open?'#f9fafb':'#E6F1FB';
-  btn.style.color=open?'#6b7280':'#185FA5';
-  btn.style.borderColor=open?'#e5e7eb':'#B5D4F4';
+  btn.classList.toggle('open',!open);
   if(!open){renderAlarms();applyAlarmInputDark();}
 }
 
@@ -333,7 +392,7 @@ function onTimerEnd(){
       isBreak=true;
       totalSecs=5*60;leftSecs=5*60;
       document.getElementById('timer-phase').textContent='휴식 (5분)';
-      document.getElementById('ring').style.stroke='#0F6E56';
+      document.getElementById('ring').setAttribute('stroke','var(--green)');
       updateDisplay();
       startTimer();
     } else if(longPhase===1){
@@ -343,7 +402,7 @@ function onTimerEnd(){
       isBreak=false;
       totalSecs=50*60;leftSecs=totalSecs;
       document.getElementById('timer-phase').textContent='집중 (2/2)';
-      document.getElementById('ring').style.stroke='#185FA5';
+      document.getElementById('ring').setAttribute('stroke','var(--accent)');
       updateDisplay();
       startTimer();
     } else {
@@ -377,7 +436,7 @@ function onTimerEnd(){
     isBreak=true;
     totalSecs=5*60;leftSecs=5*60;
     document.getElementById('timer-phase').textContent='휴식';
-    document.getElementById('ring').style.stroke='#0F6E56';
+    document.getElementById('ring').setAttribute('stroke','var(--green)');
     updateDisplay();
     startTimer();
   } else {
@@ -385,7 +444,7 @@ function onTimerEnd(){
     isBreak=false;
     totalSecs=currentMins*60;leftSecs=totalSecs;
     document.getElementById('timer-phase').textContent='집중';
-    document.getElementById('ring').style.stroke='#185FA5';
+    document.getElementById('ring').setAttribute('stroke','var(--accent)');
     updateDisplay();
   }
 }
@@ -403,7 +462,7 @@ function resetTimer(){
   totalSecs=secs;leftSecs=secs;
   document.getElementById('start-btn').textContent='시작';
   document.getElementById('timer-phase').textContent=currentMode==='long'?'집중 (1/2)':'집중';
-  document.getElementById('ring').style.stroke='#185FA5';
+  document.getElementById('ring').setAttribute('stroke','var(--accent)');
   updateDisplay();
 }
 
@@ -442,9 +501,41 @@ function playAlarm(type){
 
 function sendNotif(title,body,sound){
   playAlarm(sound||'alarm');
+  showSnackbar(title,body,sound||'alarm');
   if(typeof Notification!=='undefined'&&Notification.permission==='granted'){
     try{new Notification(title,{body:body});}catch(e){}
   }
+}
+
+var SNACK_ICONS={focus:'📚',rest:'☕',alarm:'⏰'};
+var SNACK_DUR=4000;
+
+function showSnackbar(title,msg,type){
+  var container=document.getElementById('snackbar-container');
+  var bar=document.createElement('div');
+  bar.className='snackbar';
+  bar.setAttribute('data-type',type||'alarm');
+  bar.style.position='relative';
+  bar.style.overflow='hidden';
+  var icon=SNACK_ICONS[type]||'🔔';
+  var dur=(SNACK_DUR/1000)+'s';
+  bar.innerHTML=
+    '<span class="snackbar-icon">'+icon+'</span>'
+    +'<div class="snackbar-body">'
+      +'<div class="snackbar-title">'+title+'</div>'
+      +(msg?'<div class="snackbar-msg">'+msg+'</div>':'')
+    +'</div>'
+    +'<button class="snackbar-close" onclick="dismissSnack(this.parentNode)">✕</button>'
+    +'<div class="snackbar-progress" style="--dur:'+dur+'"></div>';
+  container.appendChild(bar);
+  setTimeout(function(){dismissSnack(bar);},SNACK_DUR);
+}
+
+function dismissSnack(bar){
+  if(!bar||bar._dismissing)return;
+  bar._dismissing=true;
+  bar.classList.add('hide');
+  setTimeout(function(){if(bar.parentNode)bar.parentNode.removeChild(bar);},300);
 }
 
 function toggleAddForm(){
@@ -673,10 +764,10 @@ function renderAlarms(){
   else{
     taList.innerHTML=timeAlarms.map(function(a){
       return '<div class="subject-row">'
-        +'<div style="font-size:18px;font-weight:700;color:#185FA5;min-width:52px;">'+a.time+'</div>'
+        +'<div style="font-size:18px;font-weight:700;color:var(--accent);min-width:52px;font-family:'DM Mono',monospace;">'+a.time+'</div>'
         +'<div class="subject-name">'+a.label+'</div>'
         +'<label class="toggle"><input type="checkbox"'+(a.enabled?' checked':'')+' onchange="toggleTimeAlarmEnabled('+a.id+',this.checked)"><span class="slider"></span></label>'
-        +'<button onclick="deleteTimeAlarm('+a.id+')" style="background:none;border:none;font-size:16px;cursor:pointer;color:#9ca3af;padding:0 4px;">✕</button>'
+        +'<button onclick="deleteTimeAlarm('+a.id+')" style="background:none;border:none;font-size:16px;cursor:pointer;color:var(--text3);padding:0 4px;">✕</button>'
         +'</div>';
     }).join('');
   }
@@ -688,9 +779,9 @@ function renderAlarms(){
   else{
     cdList.innerHTML=active.map(function(a){
       return '<div class="subject-row">'
-        +'<div style="font-size:18px;font-weight:700;color:#0F6E56;min-width:52px;font-variant-numeric:tabular-nums;">'+formatCountdown(a.endAt)+'</div>'
+        +'<div style="font-size:18px;font-weight:700;color:var(--green);min-width:52px;font-family:'DM Mono',monospace;">'+formatCountdown(a.endAt)+'</div>'
         +'<div class="subject-name">'+a.label+' ('+a.mins+'분)</div>'
-        +'<button onclick="deleteCountdownAlarm('+a.id+')" style="background:none;border:none;font-size:16px;cursor:pointer;color:#9ca3af;padding:0 4px;">✕</button>'
+        +'<button onclick="deleteCountdownAlarm('+a.id+')" style="background:none;border:none;font-size:16px;cursor:pointer;color:var(--text3);padding:0 4px;">✕</button>'
         +'</div>';
     }).join('');
   }
@@ -722,6 +813,19 @@ buildColorRow();
 renderSubjects();
 updateDisplay();
 renderAlarms();
+
+// 테마 토글
+var savedTheme = localStorage.getItem('theme') || 'dark';
+function applyTheme(t){
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('theme-btn').textContent = t === 'dark' ? '🌙' : '☀️';
+  localStorage.setItem('theme', t);
+}
+function toggleTheme(){
+  var cur = document.documentElement.getAttribute('data-theme') || 'dark';
+  applyTheme(cur === 'dark' ? 'light' : 'dark');
+}
+applyTheme(savedTheme);
 </script>
 </body>
 </html>
