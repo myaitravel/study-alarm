@@ -764,7 +764,7 @@ function renderAlarms(){
   else{
     taList.innerHTML=timeAlarms.map(function(a){
       return '<div class="subject-row">'
-        +'<div style="font-size:18px;font-weight:700;color:var(--accent);min-width:52px;font-family:'DM Mono',monospace;">'+a.time+'</div>'
+        +'<div style="font-size:18px;font-weight:700;color:var(--accent);min-width:52px;font-family:DM Mono,monospace;">'+a.time+'</div>'
         +'<div class="subject-name">'+a.label+'</div>'
         +'<label class="toggle"><input type="checkbox"'+(a.enabled?' checked':'')+' onchange="toggleTimeAlarmEnabled('+a.id+',this.checked)"><span class="slider"></span></label>'
         +'<button onclick="deleteTimeAlarm('+a.id+')" style="background:none;border:none;font-size:16px;cursor:pointer;color:var(--text3);padding:0 4px;">✕</button>'
@@ -779,7 +779,7 @@ function renderAlarms(){
   else{
     cdList.innerHTML=active.map(function(a){
       return '<div class="subject-row">'
-        +'<div style="font-size:18px;font-weight:700;color:var(--green);min-width:52px;font-family:'DM Mono',monospace;">'+formatCountdown(a.endAt)+'</div>'
+        +'<div style="font-size:18px;font-weight:700;color:var(--green);min-width:52px;font-family:DM Mono,monospace;">'+formatCountdown(a.endAt)+'</div>'
         +'<div class="subject-name">'+a.label+' ('+a.mins+'분)</div>'
         +'<button onclick="deleteCountdownAlarm('+a.id+')" style="background:none;border:none;font-size:16px;cursor:pointer;color:var(--text3);padding:0 4px;">✕</button>'
         +'</div>';
