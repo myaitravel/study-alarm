@@ -239,6 +239,11 @@ circle[stroke="#f3f4f6"]{stroke:var(--bg4)!important;}
       <button onclick="resetTimer()">초기화</button>
       <button class="btn-primary" id="start-btn" onclick="toggleTimer()">시작</button>
     </div>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button onclick="playAlarm('focus')" style="flex:1;padding:7px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg3);font-size:12px;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .18s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)'">📚 집중</button>
+      <button onclick="playAlarm('rest')" style="flex:1;padding:7px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg3);font-size:12px;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .18s;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border2)'">☕ 휴식</button>
+      <button onclick="playAlarm('alarm')" style="flex:1;padding:7px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg3);font-size:12px;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .18s;" onmouseover="this.style.borderColor='var(--amber)'" onmouseout="this.style.borderColor='var(--border2)'">⏰ 알람</button>
+    </div>
   </div>
   <div class="card" style="text-align:center;">
     <div style="font-size:13px;" class="card-sub">오늘 완료한 세션</div>
